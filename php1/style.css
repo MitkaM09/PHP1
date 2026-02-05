@@ -1,0 +1,41 @@
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;   
+    height: 100vh;
+  
+}
+
+fieldset {
+    width: 450px;           
+    padding: 35px;            
+    color: rgb(208, 255, 0);
+    background-color: rgba(47, 145, 17, 0.911);
+    border: 2px solid rgb(10, 104, 1);
+    font-family: monospace;
+    
+}
+
+.form-control,
+.form-select {
+
+    width: 50%;               
+    padding: 13px;
+    margin-bottom: 15px;
+    background-color: rgb(108, 223, 73);  
+    border-radius: 10px;
+}
+
+.btn {
+    width: 100%;               
+    padding: 12px;
+    font-size: 16px;
+    background-color: rgb(108, 223, 73);      
+   
+    border-radius: 10px;
+}
+
+.btn:hover{background-color: red;
+     transition:  2s;}
+.form-select:hover{background-color: aqua; transition:  2s;}
+.form-control:hover{background-color: aqua; transition:  2s;}
