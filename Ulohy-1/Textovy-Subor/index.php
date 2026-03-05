@@ -29,11 +29,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f8f9fa;
+            background-color: indigo;
         }
 
         .form-box {
-            background: tan ;
+            background: lightblue ;
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);

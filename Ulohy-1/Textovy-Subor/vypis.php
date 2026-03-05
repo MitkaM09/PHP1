@@ -18,10 +18,10 @@ $obsah = file_get_contents("data.txt");
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f8f9fa;
+            background-color: indigo;
         }
         .content-box {
-            background: tan;
+            background: lightblue;
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
