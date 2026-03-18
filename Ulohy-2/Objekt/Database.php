@@ -16,7 +16,7 @@ class Database
             $this->conn = new PDO("mysql:host={$this->host};dbname={$this->db_name};charset={$this->charset}",$this->username,$this->password);
 
         }catch(\PDOException $e){
-            echo  $e->getMessage();
+            echo  $e->getMessage()."Chyba spojenia";
         }
         return $this->conn;
     }
