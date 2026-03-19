@@ -1,12 +1,12 @@
 <?php
 class Kniha{
+
     private int $id;
     private string $nazov;
     private string $autor;
     private int $rok_vydania;
-    private int $stav;
 
-    /*-----------------------------------------*/
+    private int $stav;
 
     public function __construct($nazov,$autor,$rok_vydania,$stav){
         $this->nazov = $nazov;
@@ -15,11 +15,12 @@ class Kniha{
         $this->stav = $stav;
     }
 
-    /*----------------------------------------*/
-    public function setId($id){
-        $this->id = $id;}
+        /*  Sety */
 
-   
+
+    public function setId($id){
+        $this->id = $id;
+    }
 
     public function setNazov($nazov){
         $this->nazov = $nazov;
@@ -37,7 +38,12 @@ class Kniha{
         $this->stav = $stav;
     }
 
-    /*-----------------------------------*/
+        /*  Gety */
+
+
+    public function getId(){
+        return $this->id;
+    }
 
     public function getNazov(){
         return $this->nazov;
@@ -54,35 +60,6 @@ class Kniha{
     public function getStav(){
         return $this->stav;
     }
-    public function getId($id){
-        return $this->id ;}
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    }
+}
+
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
