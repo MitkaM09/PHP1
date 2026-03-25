@@ -3,7 +3,7 @@
 class Database
 {
     private string $host = "localhost";
-    private string $db_name = "kniznica";
+    private string $db_name = "kniznica_db";
     private string $username = "root";
     private string $password = "";
     private string $charset = "utf8";
