@@ -4,63 +4,84 @@ include "Kniha.php";
 include "Database.php";
 
 $spojenie = new Database();
-$db = $spojenie ->nadviazSpojenie();
+$db = $spojenie->nadviazSpojenie();
 
 if (!$db) {
     die("Databaza nie pripojena");
 }
 
-$sql = "SELECT * FROM knihy";
 
-$stmt = $db->query($sql);
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "delete") {
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "delete"){
-
-    $sql = "DELETE FROM knihy WHERE id = :id";
-
-    $stmt = $db->prepare($sql);
-
-    $stmt->execute([
+    $stmtDelete = $db->prepare("DELETE FROM knihy WHERE id = :id");
+    $stmtDelete->execute([
         ":id" => $_POST["kniha_id"]
     ]);
 
-    header("Location:index.php");
+    header("Location: index.php");
     exit();
 }
 
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "create"){
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "create") {
 
-    $sql = "INSERT INTO knihy (nazov, autor, rok_vydania, stav)
-            VALUES (:nazov, :autor, :rok_vydania, :stav)";
-    $stmt = $db->prepare($sql);
-    $stmt->execute([
+    $stmtCreate = $db->prepare("INSERT INTO knihy (nazov, autor, rok_vydania, stav)
+                                VALUES (:nazov, :autor, :rok_vydania, :stav)");
+
+    $stmtCreate->execute([
         ":nazov" => $_POST["nazov"],
         ":autor" => $_POST["autor"],
-        ":rok_vydania" => $_POST["rok_vydania"],
-        ":stav" => $_POST["stav"]
+        ":rok_vydania" => (int)$_POST["rok_vydania"],
+        ":stav" => (int)$_POST["stav"]
     ]);
 
-    header("Location:index.php");
+    header("Location: index.php");
     exit();
 }
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "update"){
-    header("Location:update.php");
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "update") {
+
+    header("Location: update.php?id=" . $_POST["kniha_id"]);
     exit();
 }
+
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "info") {
+
+    header("Location: info.php?id=" . $_POST["kniha_id"]);
+    exit();
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "switch") {
+
+    $stmtSwitch = $db->prepare("UPDATE knihy 
+                                SET stav = IF(stav = 1, 0, 1)
+                                WHERE id = :id");
+
+    $stmtSwitch->execute([
+        ":id" => $_POST["id"]
+    ]);
+
+    header("Location: index.php");
+    exit();
+}
+
+
+$stmtSelect = $db->query("SELECT * FROM knihy");
+
 $kniznica = [];
 
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-   $kniha = null;
+while ($row = $stmtSelect->fetch(PDO::FETCH_ASSOC)) {
+    $kniha = new Kniha(
+        $row["nazov"],
+        $row["autor"],
+        (int)$row["rok_vydania"],
+        (int)$row["stav"]
+    );
 
-   $kniha = new Kniha($row["nazov"], $row["autor"],(int)$row["rok_vydania"],(int)$row["stav"]);
-
-   if($kniha){
     $kniha->setId($row["id"]);
     $kniznica[] = $kniha;
-   }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -68,85 +89,87 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabulka</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  </head>
+    <title>Knižnica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <h1>Knižnica</h1>
     <br>
-    <table border ="1">
-        
+
+    <!-- CREATE -->
+    <form class="create" action="index.php" method="post">
+        <fieldset>
+            <legend>Vloženie knihy</legend><br>
+
+            <input type="hidden" name="action" value="create">
+
+            <input type="text" name="nazov" placeholder="Názov" required>
+            <input type="text" name="autor" placeholder="Autor" required>
+            <input type="number" name="rok_vydania" placeholder="Rok vydania" required>
+
+            <select name="stav">
+                <option value="1">Dostupná</option>
+                <option value="0">Požičaná</option>
+            </select>
+
+            <button type="submit" class="btn btn-success">Pridať</button>
+        </fieldset>
+    </form>
+
+    <table class="table table-bordered mt-4">
         <tr>
-            <th>Nazov</th>
+            <th>Názov</th>
             <th>Autor</th>
             <th>Rok vydania</th>
             <th>Stav</th>
-            <th>Action</th>
+            <th colspan="3">Akcie</th>
         </tr>
 
-            <?php foreach ($kniznica as $kniha):?>
-                <tr>
-                  <td>
-                    <?= $kniha->getNazov();?>
-                </td>
-                <td>
-                    <?= $kniha->getAutor();?>
-                </td>
-                <td>
-                    <?= $kniha->getRok_vydania();?>
-                </td>
-                <td>
-                    <?= $kniha->getStav();?>
-                </td>
+        <?php foreach ($kniznica as $kniha): ?>
+        <tr>
+            <td><?= $kniha->getNazov(); ?></td>
+            <td><?= $kniha->getAutor(); ?></td>
+            <td><?= $kniha->getRok_vydania(); ?></td>
 
+            <td>
+                <form method="POST">
+                    <input type="hidden" name="id" value="<?= $kniha->getId(); ?>">
+                    <input type="hidden" name="action" value="switch">
 
-                <td>
-                    <form action="index.php" method="POST">
-                        <input type="hidden" name="action" value="info">
-                        <input type="hidden" name="kniha_id" value="<?= $kniha->getId(); ?>" >
-                        <button type="submit" class="btn btn-outline-info"  >INFO</button>
-                    </form>
-                </td>
-                <td>
-                    <form action="index.php" method="POST">
-                        <input type="hidden" name="action" value="update">
-                        <input type="hidden" name="kniha_id" value="<?= $kniha->getId(); ?>" >
-                        <button type="submit" class="btn btn-outline-warning"  >UPDATE</button>
-                    </form>
-                </td>
-                <td>
-                    <form action="index.php" method="POST">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="kniha_id" value="<?= $kniha->getId(); ?>" >
-                        <button type="submit" class="btn btn-outline-danger">DELETE</button>
-                    </form>
-                </td>
-                
-            </tr>
-            <?php endforeach?>
-
-                <h2>Pridanie do kniznice</h2>
-
-                <form  action="index.php" method="POST" >
-                    <input type="hidden" name="action" value="create">
-
-                    <input type="text" name="nazov" placeholder="Názov" >
-                    <input type="text" name="autor" placeholder="Autor" >
-                    <input type="number" name="rok_vydania" placeholder="rok vydania" >
-                    
-                    <select name="stav">
-                        <option value="1">Dostupná</option>
-                        <option value="0">Požičaná</option>
-                    </select>
-
-                    <button type="submit" class="btn btn-outline-success " >ADD </button>
+                    <button type="submit" class="btn btn-secondary">
+                        <?= $kniha->getStav() === 1 ? "Dostupná" : "Požičaná"; ?>
+                    </button>
                 </form>
+            </td>
+
+            <td>
+                <form method="POST">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="kniha_id" value="<?= $kniha->getId(); ?>">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+
+            <td>
+                <form method="POST">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="kniha_id" value="<?= $kniha->getId(); ?>">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </td>
+
+            <td>
+                <form method="POST">
+                    <input type="hidden" name="action" value="info">
+                    <input type="hidden" name="kniha_id" value="<?= $kniha->getId(); ?>">
+                    <button type="submit" class="btn btn-warning">Info</button>
+                </form>
+            </td>
+        </tr>
+        <?php endforeach; ?>
     </table>
-
-
-
-
 
 </body>
 </html>
