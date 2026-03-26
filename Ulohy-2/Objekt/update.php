@@ -49,36 +49,45 @@ if (isset($_GET["id"])) {
 <head>
     <meta charset="UTF-8">
     <title>Update</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
-<form method="post" action="">
-    <fieldset>
-        <legend>Update</legend>
+<div class="container mt-4">
+    <h2 class="mb-4">Update knihy</h2>
+
+    <form method="post" class="p-3 border rounded bg-white">
 
         <input type="hidden" name="action" value="update">
         <input type="hidden" name="id" value="<?= $kniha ? $kniha->getId() : '' ?>">
 
-        <label>Názov</label><br>
-        <input type="text" name="nazov" value="<?= $kniha ? $kniha->getNazov() : ''?>"><br>
+        <div class="mb-2">
+            <label class="form-label">Názov</label>
+            <input class="form-control" type="text" name="nazov" value="<?= $kniha ? $kniha->getNazov() : ''?>">
+        </div>
 
-        <label>Autor</label><br>
-        <input type="text" name="autor" value="<?= $kniha ? $kniha->getAutor() : ''?>"><br>
+        <div class="mb-2">
+            <label class="form-label">Autor</label>
+            <input class="form-control" type="text" name="autor" value="<?= $kniha ? $kniha->getAutor() : ''?>">
+        </div>
 
-        <label>Rok vydania</label><br>
-        <input type="text" name="rok_vydania" value="<?= $kniha ? $kniha->getRok_vydania() : ''?>"><br>
+        <div class="mb-2">
+            <label class="form-label">Rok vydania</label>
+            <input class="form-control" type="text" name="rok_vydania" value="<?= $kniha ? $kniha->getRok_vydania() : ''?>">
+        </div>
 
-        <label>Stav</label><br>
-        <select name="stav">
-            <option value="1" <?= ($kniha && $kniha->getStav() == 1) ? 'selected' : '' ?>>Dostupná</option>
-            <option value="0" <?= ($kniha && $kniha->getStav() == 0) ? 'selected' : '' ?>>Požičaná</option>
-        </select><br><br>
+        <div class="mb-3">
+            <label class="form-label">Stav</label>
+            <select class="form-select" name="stav">
+                <option value="1" <?= ($kniha && $kniha->getStav() == 1)  ?>>Dostupná</option>
+                <option value="0" <?= ($kniha && $kniha->getStav() == 0)  ?>>Požičaná</option>
+            </select>
+        </div>
 
-        <button type="submit">Odoslať</button>
+        <button class="btn btn-success">Odoslať</button>
 
-    </fieldset>
-</form>
+    </form>
+</div>
 
 </body>
 </html>

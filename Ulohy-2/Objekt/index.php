@@ -22,22 +22,49 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["
     exit();
 }
 
+/*Vytvorenie*/
+
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "create") {
 
     $stmtCreate = $db->prepare("INSERT INTO knihy (nazov, autor, rok_vydania, stav)
                                 VALUES (:nazov, :autor, :rok_vydania, :stav)");
 
-    $stmtCreate->execute([
+
+if(empty($_POST["nazov"])||empty($_POST["autor"])||empty($_POST["rok_vydania"])){
+    header("Location: index.php?error");
+    exit();
+
+
+
+}
+    $success =$stmtCreate->execute([
         ":nazov" => $_POST["nazov"],
         ":autor" => $_POST["autor"],
         ":rok_vydania" => (int)$_POST["rok_vydania"],
         ":stav" => (int)$_POST["stav"]
     ]);
 
-    header("Location: index.php");
-    exit();
+  
+
+    if ($success) {
+        header("Location: index.php?success");
+        exit();
+    } else {
+        header("Location: index.php?error");
+        exit();
+    }
+
+
+
+    
+
+
+
+
 }
+
+/*Vytvorenie*/
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "update") {
 
@@ -95,6 +122,27 @@ while ($row = $stmtSelect->fetch(PDO::FETCH_ASSOC)) {
 </head>
 
 <body>
+
+<?php if (isset($_GET["error"])): ?>
+    <div class="alert alert-danger" >
+        <h4 class="alert-heading">Pozor!!</h4>
+        <p>Niečo nevyšlo</p>
+        <hr>
+        <p class="mb-0">Neboj zvladneš to</p>
+    </div>
+    <?php endif; ?>
+
+<?php if (isset($_GET["success"])): ?>
+    <div class="alert alert-success" >
+        <h4 class="alert-heading">Úspech!</h4>
+        <p>Operácia prebehla úspešne.</p>
+        <hr>
+    <p class="mb-0">šikovny si</p>
+    </div>
+<?php endif; ?>
+
+
+
     <h1>Knižnica</h1>
     <br>
 
@@ -105,9 +153,9 @@ while ($row = $stmtSelect->fetch(PDO::FETCH_ASSOC)) {
 
             <input type="hidden" name="action" value="create">
 
-            <input type="text" name="nazov" placeholder="Názov" required>
-            <input type="text" name="autor" placeholder="Autor" required>
-            <input type="number" name="rok_vydania" placeholder="Rok vydania" required>
+            <input type="text" name="nazov" placeholder="Názov" >
+            <input type="text" name="autor" placeholder="Autor" >
+            <input type="number" name="rok_vydania" placeholder="Rok vydania" >
 
             <select name="stav">
                 <option value="1">Dostupná</option>

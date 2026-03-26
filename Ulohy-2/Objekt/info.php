@@ -1,4 +1,4 @@
-info.php
+
 
 <?php
 include "Kniha.php";
@@ -33,23 +33,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Info</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <h1>Informácie ku knihe:</h1>
-    <div class="info">
+<body class="bg-light">
 
-    <div>Názov: <?= $kniha ? $kniha->getNazov() : ''?></div>
-    <div>Autor: <?= $kniha ? $kniha->getAutor() : ''?></div>
-    <div>Rok vydania: <?= $kniha ? $kniha->getRok_vydania() : ''?></div>
-    <div>Stav: <?= $kniha ? ($kniha->getStav() === 1 ? "Dostupná" : "Požičaná") : '' ?></div>
-    
-    <form action="" method="post">
-        <input type="hidden" name="action" value="spat">
-        <button class="btn btn-success" type="submit">Späť</button>
-    </form>
+<div class="container mt-4">
+    <h1 class="mb-4">Informácie ku knihe:</h1>
 
+    <div class="  bg-white">
+        <div><b>Názov:</b> <?= $kniha ? $kniha->getNazov() : ''?></div>
+        <div><b>Autor:</b> <?= $kniha ? $kniha->getAutor() : ''?></div>
+        <div><b>Rok vydania:</b> <?= $kniha ? $kniha->getRok_vydania() : ''?></div>
+        <div>
+            <b>Stav:</b> 
+            <?= $kniha ? ($kniha->getStav() === 1 ? "Dostupná" : "Požičaná") : '' ?>
+        </div>
+
+        <form method="post" class="mt-3">
+            <input type="hidden" name="action" value="spat">
+            <button class="btn btn-success">Späť</button>
+        </form>
     </div>
+</div>
+
 </body>
 </html>
