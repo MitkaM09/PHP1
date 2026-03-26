@@ -45,7 +45,7 @@ if(empty($_POST["nazov"])||empty($_POST["autor"])||empty($_POST["rok_vydania"]))
         ":stav" => (int)$_POST["stav"]
     ]);
 
-  
+ 
 
     if ($success) {
         header("Location: index.php?success");
@@ -57,12 +57,19 @@ if(empty($_POST["nazov"])||empty($_POST["autor"])||empty($_POST["rok_vydania"]))
 
 
 
-    
-
-
-
 
 }
+
+  $stav = ""; 
+
+   
+
+    if (isset($_GET["success"])) {
+        $stav = "Super som na teba hrdý";} 
+  elseif (isset($_GET["error"])) {
+     $stav = "OJOJOJ niečo nejde";}
+
+
 
 /*Vytvorenie*/
 
@@ -125,19 +132,16 @@ while ($row = $stmtSelect->fetch(PDO::FETCH_ASSOC)) {
 
 <?php if (isset($_GET["error"])): ?>
     <div class="alert alert-danger" >
-        <h4 class="alert-heading">Pozor!!</h4>
-        <p>Niečo nevyšlo</p>
-        <hr>
-        <p class="mb-0">Neboj zvladneš to</p>
+        <h4 class="alert-heading"><?=$stav?></h4>
+        
     </div>
     <?php endif; ?>
 
 <?php if (isset($_GET["success"])): ?>
     <div class="alert alert-success" >
-        <h4 class="alert-heading">Úspech!</h4>
-        <p>Operácia prebehla úspešne.</p>
-        <hr>
-    <p class="mb-0">šikovny si</p>
+        <h4 class="alert-heading"><?=$stav?></h4>
+        
+    
     </div>
 <?php endif; ?>
 
