@@ -42,7 +42,7 @@ class TaskRepository
                     $row["priorita"]
                 );
 
-                //nastavenie id
+               
            
                 $task->setId((int)$row["id"]);
 
